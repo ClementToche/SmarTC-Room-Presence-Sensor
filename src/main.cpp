@@ -36,7 +36,7 @@ void setup()
   Serial.println(F("********************************************************************"));
   Serial.println("SmarTC Room Light Sensor - ESP8266");
   Serial.println(F(__DATE__ " " __TIME__));
-  Serial.println(F("Version 1.0.0"));
+  Serial.println(F("Version " PROJECT_VERSION));
   Serial.println(F("********************************************************************"));
 
   // Pin Setup
