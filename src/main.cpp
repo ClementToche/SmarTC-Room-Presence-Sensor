@@ -3,6 +3,7 @@
 #include <SmarTC_WiFi.h>
 #include <SmarTC_OTA.h>
 #include <SmarTC_MQTT.h>
+#include <SmarTC_VEML6070.h>
 
 #include "ESP8266RoomLightSensor.h"
 
@@ -10,6 +11,7 @@ SmarTC_Settings settings = SmarTC_Settings();
 SmarTC_WiFi wifi = SmarTC_WiFi();
 SmarTC_OTA ota = SmarTC_OTA();
 SmarTC_MQTT mqtt = SmarTC_MQTT();
+SmarTC_VEML6070 uvs = SmarTC_VEML6070(VEML6070_1_T, 270);
 
 unsigned long last_sense = 0;
 
@@ -87,6 +89,10 @@ void setup()
   if (!mqtt.start())
     Serial.println(F("MQTT Connection Failed! Continue and try to connect on loop"));
 
+  // VEML6070 Init
+  if (!uvs.launch())
+    Serial.println(F("VEML6070 launch failure!"));
+
   digitalWrite(LED_BUILTIN, HIGH);
 }
 
@@ -114,7 +120,8 @@ void loop()
     {
       last_sense = millis();
       Serial.println("Detect");
-      mqtt.pirSense();
+      mqtt.pirSense(); // Send PIR Status
+      mqtt.uvSense(uvs.getUV()); // Send UV Status
     }
   }
   else
