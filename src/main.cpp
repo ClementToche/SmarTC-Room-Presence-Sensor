@@ -11,6 +11,9 @@ SmarTC_WiFi wifi = SmarTC_WiFi();
 SmarTC_OTA ota = SmarTC_OTA();
 SmarTC_MQTT mqtt = SmarTC_MQTT();
 
+unsigned long last_sense = 0;
+
+// TODO: Trace library
 void setup()
 {
   Serial.begin(115200);
@@ -52,8 +55,8 @@ void setup()
 
   // Init WiFi
   wifi.init(settings.wifiSsid(),
-             settings.wifiPwd(),
-             settings.boardName());
+            settings.wifiPwd(),
+            settings.boardName());
 
   wifi.printMacAddress();
 
@@ -101,4 +104,27 @@ void loop()
 
   if (!mqtt.loop())
     Serial.println(F("MQTT Connection lost! Retry next loop ..."));
+
+  // PIR Detection Section
+  if (digitalRead(PIR_PIN) == 1)
+  {
+    digitalWrite(LED_BUILTIN, LOW);
+
+    if (millis() - last_sense > 10000)
+    {
+      last_sense = millis();
+      Serial.println("Detect");
+      mqtt.pirSense();
+    }
+  }
+  else
+  {
+    digitalWrite(LED_BUILTIN, LOW);
+  }
+
+  // Daily reboot
+  if (millis() > 24 * 60 * 60 * 1000)
+    ESP.reset();
+
+  yield();
 }
