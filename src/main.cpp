@@ -51,7 +51,7 @@ void setup()
     settings.printFilesList();
 
   // Init WiFi
-  wifi.begin(settings.wifiSsid(),
+  wifi.init(settings.wifiSsid(),
              settings.wifiPwd(),
              settings.boardName());
 
