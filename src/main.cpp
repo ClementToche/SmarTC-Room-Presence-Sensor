@@ -1,12 +1,12 @@
 #include <Arduino.h>
-#include <SmarTC_Settings_SPIFFS.h>
+#include <SmarTC_Settings.h>
 #include <SmarTC_WiFi.h>
 #include <SmarTC_OTA.h>
 #include <SmarTC_MQTT.h>
 
 #include "ESP8266RoomLightSensor.h"
 
-SmarTC_Settings_SPIFFS settings = SmarTC_Settings_SPIFFS();
+SmarTC_Settings settings = SmarTC_Settings();
 SmarTC_WiFi wifi = SmarTC_WiFi();
 SmarTC_OTA ota = SmarTC_OTA();
 SmarTC_MQTT mqtt = SmarTC_MQTT();
