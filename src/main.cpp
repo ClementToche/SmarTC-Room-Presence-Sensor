@@ -16,6 +16,7 @@ SmarTC_VEML6070 uvs = SmarTC_VEML6070(VEML6070_1_T, 270);
 unsigned long last_sense = 0;
 
 // TODO: Trace library
+// TODO: MQTT Command subscription
 void setup()
 {
   Serial.begin(115200);
