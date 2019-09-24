@@ -83,6 +83,8 @@ void setup()
 
   if (!mqtt.start())
     Serial.println(F("MQTT Connection Failed! Continue and try to connect on loop"));
+
+  digitalWrite(LED_BUILTIN, HIGH);
 }
 
 void loop()
