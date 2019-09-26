@@ -127,7 +127,7 @@ void loop()
   }
   else
   {
-    digitalWrite(LED_BUILTIN, LOW);
+    digitalWrite(LED_BUILTIN, HIGH);
   }
 
   // Daily reboot
