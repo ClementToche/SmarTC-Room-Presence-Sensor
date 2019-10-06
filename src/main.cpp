@@ -11,7 +11,7 @@ SmarTC_Settings settings = SmarTC_Settings();
 SmarTC_WiFi wifi = SmarTC_WiFi();
 SmarTC_OTA ota = SmarTC_OTA();
 SmarTC_MQTT mqtt = SmarTC_MQTT();
-SmarTC_VEML6070 uvs = SmarTC_VEML6070(VEML6070_1_T, 270);
+SmarTC_VEML6070 uvs = SmarTC_VEML6070(VEML6070_4_T, 270);
 
 unsigned long last_sense = 0;
 
