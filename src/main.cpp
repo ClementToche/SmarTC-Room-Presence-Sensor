@@ -4,6 +4,7 @@
 #include <SmarTC_OTA.h>
 #include <SmarTC_MQTT.h>
 #include <SmarTC_VEML6070.h>
+#include <SmarTC_TSL2591.h>
 
 #include "ESP8266RoomLightSensor.h"
 
@@ -12,8 +13,10 @@ SmarTC_WiFi wifi = SmarTC_WiFi();
 SmarTC_OTA ota = SmarTC_OTA();
 SmarTC_MQTT mqtt = SmarTC_MQTT();
 SmarTC_VEML6070 uvs = SmarTC_VEML6070(VEML6070_4_T, 270);
+SmarTC_TSL2591 light = SmarTC_TSL2591();
 
 unsigned long last_sense = 0;
+unsigned long last_light_probe = 0;
 
 // TODO: Trace library
 // TODO: MQTT Command subscription
@@ -94,6 +97,9 @@ void setup()
   if (!uvs.launch())
     Serial.println(F("VEML6070 launch failure!"));
 
+  if (!light.begin(TSL2591_IT_100MS, TSL2591_GAIN_MAX ))
+    Serial.println(F("TSL2591 launch failure!"));
+
   digitalWrite(LED_BUILTIN, HIGH);
 }
 
@@ -119,10 +125,11 @@ void loop()
 
     if (millis() - last_sense > 10000)
     {
-      last_sense = millis();
-      Serial.println("Detect");
-      mqtt.pirSense(); // Send PIR Status
+      last_sense = last_light_probe = millis();
       mqtt.uvSense(uvs.getUV()); // Send UV Status
+      uint32_t fl = light.getFullLuminosity();
+      mqtt.lightSense(light.getChan0(fl), light.getChan1(fl));
+      mqtt.pirSense(); // Send PIR Status
     }
   }
   else
@@ -133,6 +140,14 @@ void loop()
   // Daily reboot
   if (millis() > 24 * 60 * 60 * 1000)
     ESP.reset();
+
+  if ( millis() - last_light_probe > 5 * 60 * 1000 )
+  {
+    last_light_probe = millis();
+    mqtt.uvSense(uvs.getUV()); // Send UV Status
+    uint32_t fl = light.getFullLuminosity();
+    mqtt.lightSense(light.getChan0(fl), light.getChan1(fl));
+  }
 
   yield();
 }
